@@ -97,5 +97,4 @@ models/
 *.db
 *.sqlite3
 *.sqlite
-/assets/
-/data/
+
