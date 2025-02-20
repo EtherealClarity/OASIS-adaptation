@@ -148,7 +148,16 @@ class SocialAgent:
             try:
                 response = self.model_backend.run(openai_messages)
                 agent_log.info(f"Agent {self.agent_id} response: {response}")
-                content = response
+                content = {
+                    "message_content": response.choices[0].message.content,
+                    "tool_calls": [
+                        {
+                            "name": tool_call.function.name,
+                            "arguments": json.loads(tool_call.function.arguments)
+                        }
+                        for tool_call in response.choices[0].message.tool_calls
+                    ]
+                }
                 for tool_call in response.choices[0].message.tool_calls:
                     action_name = tool_call.function.name
                     args = json.loads(tool_call.function.arguments)
