@@ -20,7 +20,7 @@ import sys
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from camel.configs import ChatGPTConfig
+from camel.configs import ChatGPTConfig,QwenConfig
 from camel.memories import (ChatHistoryMemory, MemoryRecord,
                             ScoreBasedContextCreator)
 from camel.messages import BaseMessage
@@ -74,18 +74,18 @@ class SocialAgent:
         self.model_type = model_type
         self.is_openai_model = is_openai_model
         if self.is_openai_model:
-            model_config = ChatGPTConfig(
+            model_config = QwenConfig(
                 tools=self.env.action.get_openai_function_list(),
                 temperature=0.5,
             )
             self.model_backend = ModelFactory.create(
-                model_platform=ModelPlatformType.OPENAI,
+                model_platform=ModelPlatformType.QWEN,
                 model_type=ModelType(model_type),
                 model_config_dict=model_config.as_dict(),
             )
 
         context_creator = ScoreBasedContextCreator(
-            OpenAITokenCounter(ModelType.GPT_3_5_TURBO),
+            OpenAITokenCounter(ModelType.QWEN_2_5_14B),
             4096,
         )
         self.memory = ChatHistoryMemory(context_creator, window_size=5)
