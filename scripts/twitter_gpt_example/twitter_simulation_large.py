@@ -57,7 +57,7 @@ parser.add_argument(
     type=str,
     help="Path to the YAML config file.",
     required=False,
-    default="",
+    default="gpt_example.yaml",
 )
 
 DATA_DIR = os.path.join(
@@ -107,7 +107,7 @@ async def running(
         is_openai_model = True
 
     try:
-        all_topic_df = pd.read_csv("data/twitter_dataset/all_topics.csv")
+        all_topic_df = pd.read_csv("../../data/twitter_dataset/all_topics.csv")
         if "False" in csv_path or "True" in csv_path:
             if "-" not in csv_path:
                 topic_name = csv_path.split("/")[-1].split(".")[0]
@@ -183,8 +183,7 @@ if __name__ == "__main__":
                     **simulation_params,
                     model_configs=model_configs,
                     inference_configs=inference_configs,
-                    action_space_file_path=("scripts/twitter_gpt_example/"
-                                            "action_space_prompt.txt")))
+                    action_space_file_path=("action_space_prompt.txt")))
     else:
         asyncio.run(running())
     social_log.info("Simulation finished.")
