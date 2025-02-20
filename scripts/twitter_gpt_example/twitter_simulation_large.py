@@ -103,8 +103,9 @@ async def running(
     )
     inference_channel = Channel()
     twitter_task = asyncio.create_task(infra.running())
-    if inference_configs["model_type"][:3] == "gpt":
-        is_openai_model = True
+    # if inference_configs["model_type"][:3] == "gpt":
+    #     is_openai_model = True
+    is_openai_model = True
 
     try:
         all_topic_df = pd.read_csv("../../data/twitter_dataset/all_topics.csv")
