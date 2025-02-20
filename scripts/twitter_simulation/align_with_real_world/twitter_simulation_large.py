@@ -33,6 +33,7 @@ from oasis.social_platform.channel import Channel
 from oasis.social_platform.platform import Platform
 from oasis.social_platform.typing import ActionType
 
+# 设置一个名为 social_log 的日志记录器，并配置它以记录调试级别的日志信息到文件和控制台。
 social_log = logging.getLogger(name="social")
 social_log.setLevel("DEBUG")
 
@@ -65,6 +66,7 @@ DEFAULT_CSV_PATH = os.path.join(DATA_DIR, "False_Business_0.csv")
 
 
 async def running(
+    # Python 3.10引入的联合类型注解语法。使用竖线（|）来表示变量可以是多种类型之一
     db_path: str | None = DEFAULT_DB_PATH,
     csv_path: str | None = DEFAULT_CSV_PATH,
     num_timesteps: int = 3,
@@ -158,6 +160,7 @@ async def running(
             else:
                 await agent.perform_action_by_hci()
 
+        # 并发地运行所有在 tasks 列表中的异步任务。asyncio.gather 函数会并行地执行传入的所有任务
         await asyncio.gather(*tasks)
         # agent_graph.visualize(f"timestep_{timestep}_social_graph.png")
 

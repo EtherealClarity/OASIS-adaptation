@@ -77,6 +77,7 @@ class Platform:
             self.sandbox_clock = None
 
         self.db, self.db_cursor = create_db(self.db_path)
+        # SQLite 不会等待数据写入磁盘，用于提高数据库操作的性能
         self.db.execute("PRAGMA synchronous = OFF")
 
         self.channel = channel
@@ -125,6 +126,7 @@ class Platform:
             if action == ActionType.EXIT:
                 # If the database is in-memory, save it to a file before
                 # losing
+                # 将内存数据库备份到一个名为mock.db的文件中。
                 if self.db_path == ":memory:":
                     dst = sqlite3.connect("mock.db")
                     with dst:

@@ -24,6 +24,7 @@ class Clock:
 
     def time_transfer(self, now_time: datetime,
                       start_time: datetime) -> datetime:
+        # 在模拟环境中控制时间的流逝速度，以便更快或更慢地进行模拟。
         time_diff = now_time - self.real_start_time
         adjusted_diff = self.k * time_diff
         adjusted_time = start_time + adjusted_diff
