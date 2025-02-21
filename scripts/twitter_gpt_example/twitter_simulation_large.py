@@ -45,11 +45,11 @@ file_handler.setLevel("DEBUG")
 file_handler.setFormatter(
     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
 social_log.addHandler(file_handler)
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel("DEBUG")
-stream_handler.setFormatter(
-    logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
-social_log.addHandler(stream_handler)
+# stream_handler = logging.StreamHandler()
+# stream_handler.setLevel("DEBUG")
+# stream_handler.setFormatter(
+#     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
+# social_log.addHandler(stream_handler)
 
 parser = argparse.ArgumentParser(description="Arguments for script.")
 parser.add_argument(
