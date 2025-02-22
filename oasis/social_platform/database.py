@@ -210,6 +210,16 @@ def print_db_tables_summary():
 
 def fetch_table_from_db(cursor: sqlite3.Cursor,
                         table_name: str) -> List[Dict[str, Any]]:
+    '''
+    id  name  age
+    1   Alice 30
+    2   Bob   25
+    =>
+    [
+    {"id": 1, "name": "Alice", "age": 30},
+    {"id": 2, "name": "Bob", "age": 25}
+    ]
+    '''
     cursor.execute(f"SELECT * FROM {table_name}")
     columns = [description[0] for description in cursor.description]
     data_dicts = [dict(zip(columns, row)) for row in cursor.fetchall()]
