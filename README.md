@@ -56,7 +56,7 @@ ______________________________________________________________________
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/camel-ai/oasis.git
+git clone https://github.com/EtherealClarity/OASIS-adaptation.git
 
 cd oasis
 ```
