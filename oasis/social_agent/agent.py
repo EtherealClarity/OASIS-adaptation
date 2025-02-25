@@ -40,7 +40,7 @@ if "sphinx" not in sys.modules:
     agent_log = logging.getLogger(name="social.agent")
     agent_log.setLevel("DEBUG")
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    file_handler = logging.FileHandler(f"./log/social.agent-{str(now)}.log")
+    file_handler = logging.FileHandler(f"./log/social.agent-{str(now)}.log",encoding='utf-8')
     file_handler.setLevel("DEBUG")
     file_handler.setFormatter(
         logging.Formatter(
@@ -129,12 +129,12 @@ class SocialAgent:
         openai_messages, _ = self.memory.get_context()
         content = ""
         # sometimes self.memory.get_context() would lose system prompt
-        # start_message = openai_messages[0]
-        # if start_message["role"] != self.system_message.role_name:
-        #     openai_messages = [{
-        #         "role": self.system_message.role_name,
-        #         "content": self.system_message.content,
-        #     }] + openai_messages
+        start_message = openai_messages[0]
+        if start_message["role"] != self.system_message.role_name:
+            openai_messages = [{
+                "role": self.system_message.role_name,
+                "content": self.system_message.content,
+            }] + openai_messages
 
         if not openai_messages:
             openai_messages = [{
@@ -148,19 +148,11 @@ class SocialAgent:
             try:
                 response = self.model_backend.run(openai_messages)
                 agent_log.info(f"Agent {self.agent_id} response: {response}")
-                content = json.dumps({
-                    "message_content": response.choices[0].message.content,
-                    "tool_calls": [
-                        {
-                            "name": tool_call.function.name,
-                            "arguments": json.loads(tool_call.function.arguments)
-                        }
-                        for tool_call in response.choices[0].message.tool_calls
-                    ]
-                })
-                for tool_call in response.choices[0].message.tool_calls:
-                    action_name = tool_call.function.name
-                    args = json.loads(tool_call.function.arguments)
+                content = response.choices[0].message.content
+                json_format_content = json.loads(content)
+                for function in json_format_content["functions"]:
+                    action_name = function['name']
+                    args = function['arguments']
                     print(f"Agent {self.agent_id} is performing "
                           f"action: {action_name} with args: {args}")
                     await getattr(self.env.action, action_name)(**args)

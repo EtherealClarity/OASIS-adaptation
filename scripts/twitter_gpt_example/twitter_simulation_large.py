@@ -40,7 +40,7 @@ from oasis.social_platform.typing import ActionType
 social_log = logging.getLogger(name="social")
 social_log.setLevel("DEBUG")
 
-file_handler = logging.FileHandler("social.log")
+file_handler = logging.FileHandler("social.log",encoding="utf-8")
 file_handler.setLevel("DEBUG")
 file_handler.setFormatter(
     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))

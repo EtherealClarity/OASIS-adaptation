@@ -36,7 +36,7 @@ if "sphinx" not in sys.modules:
     twitter_log = logging.getLogger(name="social.twitter")
     twitter_log.setLevel("DEBUG")
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    file_handler = logging.FileHandler(f"./log/social.twitter-{now}.log")
+    file_handler = logging.FileHandler(f"./log/social.twitter-{now}.log",encoding="utf-8")
     file_handler.setLevel("DEBUG")
     file_handler.setFormatter(
         logging.Formatter(
