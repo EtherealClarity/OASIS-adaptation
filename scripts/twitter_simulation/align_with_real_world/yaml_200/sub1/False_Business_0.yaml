@@ -1,7 +1,7 @@
 ---
 data:
-  db_path: data/simu_db/yaml_200/False_Business_0.db
-  csv_path: data/twitter_dataset/anonymous_topic_200_1h/False_Business_0.csv
+  db_path: /home/dengshisong/Projects/oasis-adaptation/data/simu_db/yaml_200/False_Business_0.db
+  csv_path: /home/dengshisong/Projects/oasis-adaptation/data/twitter_dataset/anonymous_topic_200_1h/False_Business_0.csv
 simulation:
   num_timesteps: 30
   clock_factor: 60
@@ -10,16 +10,16 @@ model:
   num_agents: 111
   model_random_seed: 42
   cfgs:
-    - model_type: llama-3
+    - model_type: deepseek-chat
       num: 111
       server_url: http://10.140.1.67:8096/v1
-      model_path: llama-3
+      model_path: /home/dengshisong/Projects/DeepSeek-R1-Distill-Qwen-1.5B
       stop_tokens: [<|eot_id|>, <|end_of_text|>]
       temperature: 0.0
 inference:
-  model_type: llama-3
-  model_path: llama-3
+  model_type: deepseek
+  model_path: /home/dengshisong/Projects/DeepSeek-R1-Distill-Qwen-1.5B
   stop_tokens: [<|eot_id|>, <|end_of_text|>]
   server_url:
-    - host: 10.140.1.67
-      ports: [8096]
+    - host: 0.0.0.0
+      ports: [8002,8003]
