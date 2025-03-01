@@ -58,7 +58,8 @@ class InferenceThread:
                 "temperature": temperature,
                 "stop": stop_tokens
             },
-            url="vllm",
+            # url="vllm",
+            url=server_url,
             api_key=server_url,
             # because of CAMEL bugs here, will fix when CAMEL upgrade.
         )
