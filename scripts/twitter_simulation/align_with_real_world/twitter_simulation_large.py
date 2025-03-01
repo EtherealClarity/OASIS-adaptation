@@ -42,11 +42,11 @@ file_handler.setLevel("DEBUG")
 file_handler.setFormatter(
     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
 social_log.addHandler(file_handler)
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel("DEBUG")
-stream_handler.setFormatter(
-    logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
-social_log.addHandler(stream_handler)
+# stream_handler = logging.StreamHandler()
+# stream_handler.setLevel("DEBUG")
+# stream_handler.setFormatter(
+#     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
+# social_log.addHandler(stream_handler)
 
 parser = argparse.ArgumentParser(description="Arguments for script.")
 parser.add_argument(
@@ -54,7 +54,7 @@ parser.add_argument(
     type=str,
     help="Path to the YAML config file.",
     required=False,
-    default="",
+    default="yaml_200/sub1/False_Business_0.yaml",
 )
 
 DATA_DIR = os.path.join(
@@ -108,7 +108,7 @@ async def running(
     inference_task = asyncio.create_task(infere.run())
 
     try:
-        all_topic_df = pd.read_csv("data/twitter_dataset/all_topics.csv")
+        all_topic_df = pd.read_csv("../../../data/twitter_dataset/all_topics.csv")
         if "False" in csv_path or "True" in csv_path:
             if "-" not in csv_path:
                 topic_name = csv_path.split("/")[-1].split(".")[0]
@@ -185,9 +185,7 @@ if __name__ == "__main__":
                     **simulation_params,
                     model_configs=model_configs,
                     inference_configs=inference_configs,
-                    action_space_file_path=(
-                        "scripts/twitter_simulation/align_with_real_world/"
-                        "action_space_prompt.txt")))
+                    action_space_file_path=("action_space_prompt.txt")))
     else:
         asyncio.run(running())
     social_log.info("Simulation finished.")
