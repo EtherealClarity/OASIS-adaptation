@@ -72,6 +72,7 @@ class SocialAgent:
             content=self.user_info.to_system_message(action_space_prompt),
         )
         self.model_type = model_type
+        self.is_deepseek_chat = model_type == "deepseek-chat"
         self.is_openai_model = is_openai_model
         if self.is_openai_model:
             model_config = QwenConfig(
@@ -176,7 +177,9 @@ class SocialAgent:
                     openai_messages)
                 mes_id, content = await self.infe_channel.read_from_send_queue(
                     mes_id)
-
+                if self.is_deepseek_chat:
+                    # 提取'</think>'后的内容
+                    content = content.split("</think>")[1]
                 agent_log.info(
                     f"Agent {self.agent_id} receive response: {content}")
 
