@@ -32,37 +32,30 @@ def check_port_open(host, port):
 
 
 if __name__ == "__main__":
-    host = "10.109.1.8"
-    ports = [
-        [8002, 8003, 8005],
-        [8006, 8007, 8008],
-        [8011, 8009, 8010],
-        [8014, 8012, 8013],
-        [8017, 8015, 8016],
-        [8020, 8018, 8019],
-        [8021, 8022, 8023],
-        [8024, 8025, 8026],
-    ]
-    gpus = [0]
-
-    all_ports = [port for i in gpus for port in ports[i]]
-    print("All ports: ", all_ports, '\n\n')
+    # 本机 IP 地址
+    host = "0.0.0.0"
+    ports = [8002,8003]
+    gpus = [2,3,4,5]
 
     t = None
-    for i in range(3):
-        for j, gpu in enumerate(gpus):
-            cmd = (
-                f"CUDA_VISIBLE_DEVICES={gpu} python -m "
-                f"vllm.entrypoints.openai.api_server --model "
-                f"'/ibex/user/yangz0h/open_source_llm/llama-3' "
-                f"--served-model-name 'llama-3' "
-                f"--host {host} --port {ports[j][i]} --gpu-memory-utilization "
-                f"0.3 --disable-log-stats")
-            t = threading.Thread(target=subprocess.run,
-                                 args=(cmd, ),
-                                 kwargs={"shell": True},
-                                 daemon=True)
-            t.start()
-        check_port_open(host, ports[0][i])
 
+    for i, port in enumerate(ports):
+        gpu_num_per_port = int(len(gpus)/len(ports))
+        gpus_per_port = gpus[int(i) * gpu_num_per_port:int(i + 1) * gpu_num_per_port]
+        cmd = (
+            f"CUDA_VISIBLE_DEVICES={','.join([str(n) for n in gpus_per_port ])} "
+            f"python -m vllm.entrypoints.openai.api_server "
+            f"--model '/home/dengshisong/Projects/DeepSeek-R1-Distill-Qwen-1.5B' "
+            f"--served-model-name 'deepseek' "
+            f"--tensor-parallel-size {str(gpu_num_per_port)} "
+            f"--host {host} "
+            f"--port {ports[i]} "
+            f"--gpu-memory-utilization 0.4 "
+            f"--disable-log-stats")
+        t = threading.Thread(target=subprocess.run,
+                             args=(cmd, ),
+                             kwargs={"shell": True},
+                             daemon=True)
+        t.start()
+        check_port_open(host, ports[i])
     t.join()
