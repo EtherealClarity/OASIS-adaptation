@@ -130,6 +130,11 @@ class SocialAgent:
         openai_messages, _ = self.memory.get_context()
         content = ""
         # sometimes self.memory.get_context() would lose system prompt
+        if not openai_messages:
+            openai_messages = [{
+                "role": self.system_message.role_name,
+                "content": self.system_message.content,
+            }] + [user_msg.to_openai_user_message()]
         start_message = openai_messages[0]
         if start_message["role"] != self.system_message.role_name:
             openai_messages = [{
@@ -137,11 +142,7 @@ class SocialAgent:
                 "content": self.system_message.content,
             }] + openai_messages
 
-        if not openai_messages:
-            openai_messages = [{
-                "role": self.system_message.role_name,
-                "content": self.system_message.content,
-            }] + [user_msg.to_openai_user_message()]
+
         agent_log.info(
             f"Agent {self.agent_id} is running with prompt: {openai_messages}")
 
@@ -157,7 +158,8 @@ class SocialAgent:
                     print(f"Agent {self.agent_id} is performing "
                           f"action: {action_name} with args: {args}")
                     await getattr(self.env.action, action_name)(**args)
-                    self.perform_agent_graph_action(action_name, args)
+                    if self.agent_graph is not None:
+                        self.perform_agent_graph_action(action_name, args)
             except Exception as e:
                 print(e)
                 content = "No response."
@@ -202,7 +204,8 @@ class SocialAgent:
                             "name": name,
                             "arguments": arguments
                         })
-                        self.perform_agent_graph_action(name, arguments)
+                        if self.agent_graph is not None:
+                            self.perform_agent_graph_action(name, arguments)
                     break
                 except Exception as e:
                     agent_log.error(f"Agent {self.agent_id} error: {e}")
@@ -226,33 +229,46 @@ class SocialAgent:
 
     async def perform_test(self):
         """
-        doing test for all agents.
+        doing survey for core agents.
         """
         # user conduct test to agent
-        _ = BaseMessage.make_user_message(role_name="User",
-                                          content=("You are a twitter user."))
+        # user_msg = BaseMessage.make_user_message(role_name="User",
+        #                                   content=(self.test_prompt))
         # TODO error occurs
-        # self.memory.write_record(MemoryRecord(user_msg,
-        #                                       OpenAIBackendRole.USER))
+        # self.memory.write_record(MemoryRecord(message=user_msg,
+        #                                       role_at_backend=OpenAIBackendRole.USER))
 
         openai_messages, num_tokens = self.memory.get_context()
+
+        system_message_content =  self.system_message.content.split("# RESPONSE FORMAT")[0].split("# SELF-DESCRIPTION")[1]
 
         openai_messages = ([{
             "role":
             self.system_message.role_name,
             "content":
-            self.system_message.content.split("# RESPONSE FORMAT")[0],
+            "You are a twitter user." + system_message_content,
         }] + openai_messages + [{
             "role": "user",
             "content": self.test_prompt
         }])
-        agent_log.info(f"Agent {self.agent_id}: {openai_messages}")
-
-        message_id = await self.infe_channel.write_to_receive_queue(
-            openai_messages)
-        message_id, content = await self.infe_channel.read_from_send_queue(
-            message_id)
-        agent_log.info(f"Agent {self.agent_id} receive response: {content}")
+        agent_log.info(f"Agent {self.agent_id}'s prompt: {openai_messages}")
+        if self.is_openai_model:
+            try:
+                response = self.model_backend.run(openai_messages)
+                content = response.choices[0].message.content
+            except Exception as e:
+                print(e)
+                content = "No response."
+        else:
+            try:
+                message_id = await self.infe_channel.write_to_receive_queue(
+                    openai_messages)
+                message_id, content = await self.infe_channel.read_from_send_queue(
+                    message_id)
+            except Exception as e:
+                print(e)
+                content = "No response."
+        agent_log.info(f"Agent {self.agent_id} receive response: {[content]}")
         return {
             "user_id": self.agent_id,
             "prompt": openai_messages,
