@@ -142,7 +142,7 @@ python scripts/reddit_gpt_example/reddit_simulation_gpt.py --config_path scripts
 python scripts/reddit_emall_demo/emall_simulation.py --config_path scripts/reddit_emall_demo/emall.yaml
 
 # For Twitter
-python scripts/twitter_gpt_example/twitter_simulation_large.py --config_path scripts/twitter_gpt_example/gpt_example.yaml
+python scripts/twitter_gpt_example/align_with_real_world/twitter_simulation_large.py --config_path scripts/twitter_gpt_example/gpt_example.yaml
 ```
 
 Note: without modifying the Configuration File, running the Reddit script requires only 36 agents operating at an activation probability of 0.1 for 2 time steps, the entire process approximately requires 7.2 agent inferences, and approximately 14 API requests to call GPT-4. The Twitter script has about 111 agents operating at an activation probability of roughly 0.1 for 3 time steps, i.e., 33.3 agent inferences, using GPT-3.5-turbo. I hope this is a cost you can bear. For running larger scale agent simulations, it is recommended to read the next section on experimenting with open-source models.
@@ -280,7 +280,7 @@ python scripts/reddit_simulation_counterfactual/reddit_simulation_counterfactual
 
 # Information spreading
 # one case in align_with_real_world, The ‘user_char’ field in the dataset we have open-sourced has been replaced with  ‘description’ to ensure privacy protection.
-python scripts/twitter_simulation/twitter_simulation_large.py --config_path scripts/twitter_simulation/align_with_real_world/yaml_200/sub1/False_Business_0.yaml
+python scripts/twitter_simulation/align_with_real_world/twitter_simulation_large.py --config_path scripts/twitter_simulation/align_with_real_world/yaml_200/sub1/False_Business_0.yaml
 
 # Group Polarization
 python scripts/twitter_simulation/group_polarization/twitter_simulation_group_polar.py --config_path scripts/twitter_simulation/group_polarization/group_polarization.yaml
