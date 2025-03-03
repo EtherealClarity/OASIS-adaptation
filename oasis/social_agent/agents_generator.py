@@ -232,6 +232,7 @@ async def generate_agents_100w(
     action_space_prompt: str = None,
     model_random_seed: int = 42,
     cfgs: list[Any] | None = None,
+    is_openai_model: bool = False,
     neo4j_config: Neo4jConfig | None = None,
 ) -> List:
     """Generate and return a dictionary of agents from the agent
@@ -338,8 +339,9 @@ async def generate_agents_100w(
             twitter_channel=twitter_channel,
             inference_channel=inference_channel,
             model_type=model_type,
-            agent_graph=agent_graph,
+            # agent_graph=agent_graph,
             action_space_prompt=action_space_prompt,
+            is_openai_model=is_openai_model
         )
 
         agent_graph.append(agent)
@@ -354,9 +356,9 @@ async def generate_agents_100w(
             agent_info['followers_count'] = 0
 
         if not agent_info["following_count"].empty:
-            num_followings = agent_info["following_count"][agent_id]
+            num_followings = int(agent_info["following_count"][agent_id])
         if not agent_info["followers_count"].empty:
-            num_followers = agent_info["followers_count"][agent_id]
+            num_followers = int(agent_info["followers_count"][agent_id])
 
         sign_up_list.append((
             agent_id,
