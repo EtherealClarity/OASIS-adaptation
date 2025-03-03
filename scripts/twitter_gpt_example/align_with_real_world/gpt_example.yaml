@@ -1,7 +1,7 @@
 ---
 data:
-  db_path: ../../data/simu_db/yaml_gpt/False_Business_0.db
-  csv_path: ../../data/twitter_dataset/anonymous_topic_200_1h/False_Business_0.csv
+  db_path: ../../../data/simu_db/yaml_gpt/False_Business_0.db
+  csv_path: ../../../data/twitter_dataset/anonymous_topic_200_1h/False_Business_0.csv
 simulation:
   num_timesteps: 3
   clock_factor: 60

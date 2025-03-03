@@ -40,7 +40,7 @@ from oasis.social_platform.typing import ActionType
 social_log = logging.getLogger(name="social")
 social_log.setLevel("DEBUG")
 
-file_handler = logging.FileHandler("social.log",encoding="utf-8")
+file_handler = logging.FileHandler("social.log", encoding="utf-8")
 file_handler.setLevel("DEBUG")
 file_handler.setFormatter(
     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
@@ -108,7 +108,7 @@ async def running(
     is_openai_model = True
 
     try:
-        all_topic_df = pd.read_csv("../../data/twitter_dataset/all_topics.csv")
+        all_topic_df = pd.read_csv("../../../data/twitter_dataset/all_topics.csv")
         if "False" in csv_path or "True" in csv_path:
             if "-" not in csv_path:
                 topic_name = csv_path.split("/")[-1].split(".")[0]
