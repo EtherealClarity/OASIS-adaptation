@@ -1,0 +1,21 @@
+---
+data:
+  db_path: ../../../data/simu_db/yaml_gpt/group_polarization.db
+  csv_path: ../../../data/twitter_dataset/group_polarization/197_baoshou.csv
+simulation:
+  num_timesteps: 30
+  clock_factor: 60
+  recsys_type: twhin-bert
+model:
+  num_agents: 196
+  model_random_seed: 42
+  cfgs:
+    - model_type: qwen2.5-14b-instruct
+      num: 196
+      server_url: null
+      model_path: null
+      stop_tokens: null
+      temperature: null
+inference:
+  model_type: qwen2.5-14b-instruct
+  is_openai_model: true
