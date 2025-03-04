@@ -526,7 +526,7 @@ async def generate_reddit_agents(
 
     control_user_num = agent_graph.get_num_nodes()
 
-    with open(agent_info_path, "r") as file:
+    with open(agent_info_path, "r", encoding='utf-8') as file:
         agent_info = json.load(file)
 
     async def process_agent(i):
