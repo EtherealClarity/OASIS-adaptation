@@ -46,11 +46,11 @@ file_handler.setLevel("DEBUG")
 file_handler.setFormatter(
     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
 social_log.addHandler(file_handler)
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel("DEBUG")
-stream_handler.setFormatter(
-    logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
-social_log.addHandler(stream_handler)
+# stream_handler = logging.StreamHandler()
+# stream_handler.setLevel("DEBUG")
+# stream_handler.setFormatter(
+#     logging.Formatter("%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
+# social_log.addHandler(stream_handler)
 
 parser = argparse.ArgumentParser(description="Arguments for script.")
 parser.add_argument(
@@ -58,7 +58,7 @@ parser.add_argument(
     type=str,
     help="Path to the YAML config file.",
     required=False,
-    default="",
+    default="gpt_example.yaml",
 )
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
@@ -118,8 +118,7 @@ async def running(
 
     twitter_task = asyncio.create_task(infra.running())
 
-    if inference_configs["model_type"][:3] == "gpt":
-        is_openai_model = True
+    is_openai_model = inference_configs["is_openai_model"]
     if not controllable_user:
         raise ValueError("Uncontrollable user is not supported")
     else:
@@ -139,7 +138,7 @@ async def running(
             inference_configs["model_type"],
             is_openai_model,
         )
-    with open(pair_path, "r") as f:
+    with open(pair_path, "r", encoding='utf-8') as f:
         pairs = json.load(f)
 
     for timestep in range(num_timesteps):
