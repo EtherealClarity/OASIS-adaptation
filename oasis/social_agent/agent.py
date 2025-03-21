@@ -16,6 +16,7 @@ from __future__ import annotations
 import inspect
 import json
 import logging
+import re
 import sys
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
@@ -47,6 +48,20 @@ if "sphinx" not in sys.modules:
             "%(levelname)s - %(asctime)s - %(name)s - %(message)s"))
     agent_log.addHandler(file_handler)
 
+def extract_json_from_string(mixed_str):
+
+    pattern = r'(\{.*?\[.*?\].*?\})'
+    matches = re.findall(pattern, mixed_str, flags=re.DOTALL)
+
+    valid_jsons = None
+    for match in matches:
+        try:
+            valid_jsons = json.loads(match)
+
+        except json.JSONDecodeError:
+            print("无效的JSON字符串:", match)
+            pass  # 忽略无效的JSON
+    return valid_jsons
 
 class SocialAgent:
     r"""Social Agent."""
@@ -151,8 +166,8 @@ class SocialAgent:
                 response = self.model_backend.run(openai_messages)
                 agent_log.info(f"Agent {self.agent_id} response: {response}")
                 content = response.choices[0].message.content
-                json_format_content = json.loads(content)
-                for function in json_format_content["functions"]:
+                json_content = extract_json_from_string(content)
+                for function in json_content["functions"]:
                     action_name = function['name']
                     args = function['arguments']
                     print(f"Agent {self.agent_id} is performing "
@@ -179,14 +194,15 @@ class SocialAgent:
                     openai_messages)
                 mes_id, content = await self.infe_channel.read_from_send_queue(
                     mes_id)
-                if self.is_deepseek_chat:
-                    # 提取'</think>'后的内容
-                    content = content.split("</think>")[1]
-                agent_log.info(
-                    f"Agent {self.agent_id} receive response: {content}")
-
+                if self.is_deepseek_chat and content != "No response.":
+                    try:
+                        content = content.split("</think>")[1]
+                    except IndexError:
+                        pass
                 try:
-                    content_json = json.loads(content)
+                    content_json = extract_json_from_string(content)
+                    agent_log.info(
+                        f"Agent {self.agent_id} receive response: {content_json}")
                     functions = content_json["functions"]
                     # reason = content_json["reason"]
 
@@ -268,6 +284,11 @@ class SocialAgent:
             except Exception as e:
                 print(e)
                 content = "No response."
+        if self.is_deepseek_chat and content != "No response.":
+            try:
+                content = content.split("</think>")[1]
+            except IndexError:
+                pass
         agent_log.info(f"Agent {self.agent_id} receive response: {[content]}")
         return {
             "user_id": self.agent_id,
