@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # 本机 IP 地址
     host = "0.0.0.0"
     ports = [8002,8003]
-    gpus = [2,3,4,5]
+    gpus = [0,1,2,3,4,5,6,7]
 
     t = None
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         cmd = (
             f"CUDA_VISIBLE_DEVICES={','.join([str(n) for n in gpus_per_port ])} "
             f"python -m vllm.entrypoints.openai.api_server "
-            f"--model '/home/dengshisong/Projects/DeepSeek-R1-Distill-Qwen-1.5B' "
+            f"--model '/home/dengshisong/Projects/DeepSeek-R1-Distill-Llama-8B' "
             f"--served-model-name 'deepseek' "
             f"--tensor-parallel-size {str(gpu_num_per_port)} "
             f"--host {host} "
