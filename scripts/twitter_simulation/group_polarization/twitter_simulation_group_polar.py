@@ -40,11 +40,11 @@ file_handler.setLevel('DEBUG')
 file_handler.setFormatter(
     logging.Formatter('%(levelname)s - %(asctime)s - %(name)s - %(message)s'))
 social_log.addHandler(file_handler)
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel('DEBUG')
-stream_handler.setFormatter(
-    logging.Formatter('%(levelname)s - %(asctime)s - %(name)s - %(message)s'))
-social_log.addHandler(stream_handler)
+# stream_handler = logging.StreamHandler()
+# stream_handler.setLevel('DEBUG')
+# stream_handler.setFormatter(
+#     logging.Formatter('%(levelname)s - %(asctime)s - %(name)s - %(message)s'))
+# social_log.addHandler(stream_handler)
 
 parser = argparse.ArgumentParser(description="Arguments for script.")
 parser.add_argument(
@@ -52,7 +52,7 @@ parser.add_argument(
     type=str,
     help="Path to the YAML config file.",
     required=False,
-    default="",
+    default="group_polarization.yaml",
 )
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
@@ -97,22 +97,9 @@ async def running(
     twitter_task = asyncio.create_task(infra.running())
     inference_task = asyncio.create_task(infere.run())
 
-    try:
-        all_topic_df = pd.read_csv("data/label_clean_v7.csv")
-        if "False" in csv_path or "True" in csv_path:
-            if "-" not in csv_path:
-                topic_name = csv_path.split("/")[-1].split(".")[0]
-            else:
-                topic_name = csv_path.split("/")[-1].split(".")[0].split(
-                    "-")[0]
-            source_post_time = all_topic_df[
-                all_topic_df["topic_name"] ==
-                topic_name]["start_time"].item().split(" ")[1]
-            start_hour = int(source_post_time.split(":")[0]) + float(
-                int(source_post_time.split(":")[1]) / 60)
-    except Exception:
-        print("No real-world data, let start_hour be 13")
-        start_hour = 13
+
+    print("No real-world data, let start_hour be 13")
+    start_hour = 13
 
     model_configs = model_configs or {}
     agent_graph = await generate_agents_100w(
