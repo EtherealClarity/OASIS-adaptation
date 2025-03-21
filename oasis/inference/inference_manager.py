@@ -34,6 +34,7 @@ class InferencerManager:
         self,
         channel,
         model_type,
+        temperature,
         model_path,
         stop_tokens,
         server_url,
@@ -54,7 +55,7 @@ class InferencerManager:
                     server_url=_url,
                     stop_tokens=stop_tokens,
                     model_type=model_type,
-                    temperature=0.0,
+                    temperature=temperature,
                     shared_memory=shared_memory,
                 )
                 self.threads.append(thread)
