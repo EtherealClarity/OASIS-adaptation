@@ -17,7 +17,7 @@ import time
 
 import requests
 
-
+# test
 def check_port_open(host, port):
     while True:
         url = f"http://{host}:{port}/health"
